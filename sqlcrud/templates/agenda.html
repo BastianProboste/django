@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Agenda</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+<body>
+<h1>Agenda</h1>
+<form action="{% url 'crear_usuario' %}" method="POST">
+    {% csrf_token %}
+    <input type="text" name="nombre" placeholder="Escribe el nombre" required>
+    <input type="text" name="apellido" placeholder="Escribe el apellido" required>
+    <input type="number" name="edad" placeholder="Escribe la edad" required>
+    <input type="text" name="rut" placeholder="Escribe el RUT" required>
+    <button type="submit">Guardar Persona</button>
+</form>
+{% for usuario in usuarios %}
+    <div>
+        {% if modificar_usuario and modificar_usuario.id == usuario.id %}
+            <form action="{% url 'editar_usuario' usuario.id %}" method="POST">
+                {% csrf_token %}
+                <input type="text" name="nombre" value="{{ modificar_usuario.nombre }}" placeholder="Escribe el nombre" required>
+                <input type="text" name="apellido" value="{{ modificar_usuario.apellido }}" placeholder="Escribe el apellido" required>
+                <input type="number" name="edad" value="{{ modificar_usuario.edad }}" placeholder="Escribe la edad" required>
+                <input type="text" name="rut" value="{{ modificar_usuario.rut }}" placeholder="Escribe el RUT" required>
+                <button type="submit">Actualizar</button>
+            </form>
+        {% else %}
+            <h4>{{ usuario.nombre }}</h4>
+            <h4>{{ usuario.apellido }}</h4>
+            <h4>{{ usuario.edad }}</h4>
+            <h4>{{ usuario.rut }}</h4>
+            <form action="{% url 'eliminar_usuario' usuario.id %}" method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit">Eliminar</button>
+            </form>
+            <form action="{% url 'listar_usuarios' %}" method="GET" style="display: inline;">
+                <input type="hidden" name="editando" value="{{ usuario.id }}">
+                <button type="submit">Editar</button>
+            </form>
+        {% endif %}
+    </div>
+{% empty %}
+    <h1>No hay personas</h1>
+{% endfor %}
+</body>
+</html>
